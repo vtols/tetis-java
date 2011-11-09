@@ -1,0 +1,262 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package tetisconsole;
+
+import java.awt.Color;
+import java.util.Random;
+
+/**
+ *
+ * @author ИгВа
+ */
+public class Tetris {
+    ColoredTable ct;     //TODO
+    boolean end = false;
+    int h, w, x, y, ghx, ghy;
+    // ghx/y - ghost figure
+    Block[] b = new Block[]{Block.fig1, Block.fig2, Block.fig3,
+        Block.fig4, Block.fig5, Block.fig6, Block.fig7};
+    Color[] colors = new Color[]{Color.RED, Color.GREEN, Color.CYAN,
+        Color.YELLOW};
+    Block cur = null, 
+          next = getNext(), 
+          hold = null;
+    boolean drawcur = false, 
+            holdf = false;
+    //int points = 0, lines = 0;
+    int ptinc = 0;
+    
+    Counter ptc = new ProgressionCounter(100);
+    //new StandardCounter(100);
+    
+    Tetris(int x, int y) {
+        ct = new ColoredTable(x, y);
+        h = x;
+        w = y;
+    }
+
+    private void gen() {
+        ptinc = 0;
+        if(next == null)
+            next = getNext();
+        if(!canGen()) {
+            cur = null;
+            end = true;
+            return;
+        }
+        x = 0;
+        y = w / 2 - next.w / 2;
+        cur = next;
+        next = getNext();
+        drawcur = true;
+        holdf = false;
+        calcghost();
+    }
+
+    public boolean checkmove() {
+        for(int i = 0; i < cur.h; i++)
+            for(int j = 0; j < cur.w; j++) {
+                if(cur.block[i][j] && ct.t[x + i][y + j] && drawcur)
+                    end = true;
+                if (x + i + 1 == h ||
+                (cur.block[i][j] && ct.t[x + i + 1][y + j]))
+                    return false;
+            }
+        return true;
+    }
+
+    public boolean move() {
+        if(end)
+            return false;
+        boolean continuemv = true;
+        if(cur == null)
+            gen();
+        if (checkmove()) x++;
+        else if(!end) {
+            continuemv = false;
+            if(drawcur) {
+                ptc.figureStopped();
+                for(int i = 0; i < cur.h; i++)
+                    for(int j = 0; j < cur.w; j++)
+                        if (cur.block[i][j]) {
+                            ct.t[x + i][y + j] = true;
+                            ct.code[x + i][y + j] = 1;
+                            ct.c[x + i][y + j] = cur.color;
+                        }
+            }
+            if(!checkLine())
+                gen();
+        }
+        calcghost();
+        return continuemv;
+        //gameover();  //checking gameover
+    }
+
+    public boolean gameover() {
+        if(end)
+            return true;
+        for(int i = 0; i < w; i++)
+            if (ct.t[0][i]) {
+                end = true;
+                return true;
+            }
+        return false;
+    }
+
+    public ColoredTable table() {
+        ColoredTable pt = new ColoredTable(h, w);
+        for(int i = 0; i < h; i++)
+            for(int j = 0; j < w; j++) {
+                pt.t[i][j] = ct.t[i][j];
+                pt.c[i][j] = ct.c[i][j];
+                pt.code[i][j] = ct.code[i][j];
+            }
+        if(!end && cur != null && drawcur) {
+            for(int i = 0; i < cur.h; i++)
+                for(int j = 0; j < cur.w; j++)
+                    if(cur.block[i][j]) {
+                        pt.t[x + i][y + j] = true;
+                        pt.code[x + i][y + j] = 1;
+                        pt.c[x + i][y + j] = cur.color;
+                        
+                        if(ghx - x >= cur.h) {
+                            pt.code[ghx + i][ghy + j] = 2;
+                            pt.c[ghx + i][ghy + j] = cur.color;
+                        }
+                    }
+        }
+        return pt;
+    }
+
+    private Block getNext() {
+        Random r = new Random();
+        Block tmp = b[r.nextInt(b.length)];
+        tmp.color = colors[r.nextInt(colors.length)];
+        return tmp;
+    }
+
+    private boolean canGen() {
+        int nx = 0;
+        int ny = w / 2 - next.w / 2;
+        for(int i = 0; i < next.h; i++)
+            for(int j = 0; j < next.w; j++) {
+                if(next.block[i][j] && ct.t[nx + i][ny + j]) {
+                    end = true;
+                    return false;
+                }
+            }
+        return true;
+    }
+
+    void moveLeft() {
+        if(end)
+            return;
+        for(int i = 0; i < cur.h; i++)
+            for(int j = 0; j < cur.w; j++) {
+                if (y + j - 1 < 0 ||
+                (cur.block[i][j] && ct.t[x + i][y + j - 1]))
+                    return;
+            }
+        y--;
+        calcghost();
+    }
+
+    void moveRight() {
+        if(end)
+            return;
+        for(int i = 0; i < cur.h; i++)
+            for(int j = 0; j < cur.w; j++) {
+                if (y + j + 1 == w ||
+                (cur.block[i][j] && ct.t[x + i][y + j + 1]))
+                    return;
+            }
+        y++;
+        calcghost();
+    }
+
+    void rotate() {
+        if(end)
+            return;
+        Block rot = cur.spin();
+        int ny = y;
+        while(rot.w + ny > w)
+            ny--;
+        if(rot.h + x > h)
+            return;
+        for(int i = 0; i < rot.h; i++)
+            for(int j = 0; j < rot.w; j++) {
+                if (rot.block[i][j] && ct.t[x + i][ny + j])
+                    return;
+            }
+        y = ny;
+        rot.color = cur.color;
+        cur = rot;
+        calcghost();
+    }
+
+    private boolean checkLine() {
+        for(int k = h - 1; k > 0; k--) {
+            boolean ln = true;
+            for(int j = 0; j < w; j++)
+                ln &= ct.t[k][j];
+            if(ln) {
+                for(int i = k; i > 0; i--)
+                    for(int j = 0; j < w; j++) {
+                        ct.t[i][j] = ct.t[i - 1][j];
+                        ct.code[i][j] = ct.code[i - 1][j];
+                        //ct.t[i][j] = ct.t[i - 1][j];
+                        ct.c[i][j] = ct.c[i - 1][j];
+                    }
+                ptc.lineCleared(++ptinc);
+                //points += (++ptinc) * 100;
+                //lines++;
+                drawcur = false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void calcghost() {
+        if(end)
+            return;
+        int xinc = -1;
+        for(int i = 0; i < cur.w; i++) {
+            int d = 0, inc = 0;
+            for(int j = 0; j < cur.h; j++)
+                if(cur.block[j][i])
+                    d = j + x + 1;
+            while((d < h && !ct.t[d][y + i])) {
+                inc++;
+                d++;
+            }
+            if(xinc == -1 || xinc > inc)
+                xinc = inc;
+        }
+        ghx = x + xinc;
+        ghy = y;
+    }
+    
+    public void swap() {
+        if(!holdf) {
+            if(hold == null) {
+                //hold = cur;
+                hold = cur.original();
+                gen();
+            } else {
+                Block tmp = hold;
+                //hold = cur;
+                hold = cur.original();
+                cur = tmp;
+                x = 0;
+                y = w / 2 - cur.w / 2;
+                calcghost();
+            }
+            holdf = true;
+        }
+    }
+
+}
