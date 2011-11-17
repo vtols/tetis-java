@@ -18,7 +18,7 @@ public class Main {
     public static TetrisPanel pan;
 
     private static void createAndShowGUI() {
-        mframe = new JFrame("JTetis 0.1");
+        mframe = new JFrame("JTetis");
         pan = new TetrisPanel();
         mframe.add(pan);
         mframe.setResizable(false);
