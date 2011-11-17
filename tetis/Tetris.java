@@ -27,6 +27,7 @@ public class Tetris {
         ct = new ColoredTable(x, y);
         h = x;
         w = y;
+        gen();
     }
 
     private void gen() {
