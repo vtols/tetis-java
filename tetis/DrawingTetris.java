@@ -194,6 +194,7 @@ public class DrawingTetris implements DrawingInterface {
 
     public void start() {
         t = new Tetris(th, tw);
+        started = true;
         TimerTask task = new TimerTask() {
             public void run(){
                 started = true;
