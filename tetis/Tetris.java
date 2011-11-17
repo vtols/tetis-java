@@ -137,7 +137,7 @@ public class Tetris {
 
     private Block getNext() {
         Random r = new Random();
-        Block tmp = b[r.nextInt(b.length)];
+        Block tmp = new Block(b[r.nextInt(b.length)]);
         tmp.color = colors[r.nextInt(colors.length)];
         return tmp;
     }

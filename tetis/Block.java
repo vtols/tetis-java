@@ -8,6 +8,16 @@ public class Block {
     public Color color = Color.BLACK;
     public int spinx = 0, spiny = 0;
     public Block orig = null;
+    
+    Block(Block b) {
+    	block = b.block;
+    	h = b.h;
+    	w = b.w;
+    	color = b.color;
+    	spinx = b.spinx;
+    	spiny = b.spiny;
+    	orig = b.orig;
+    }
 
     Block(boolean [][] b) {
         block = b;
