@@ -48,12 +48,18 @@ public class Tetris {
     }
 
     public boolean checkmove() {
-        for(int i = 0; i < cur.h; i++)
-            for(int j = 0; j < cur.w; j++) {
-                if(cur.block[i][j] && ct.t[x + i][y + j] && drawcur)
+    	int ch = cur.h,
+    		cw = cur.w;
+        for(int i = 0; i < ch; i++)
+            for(int j = 0; j < cw; j++) {
+                if(cur.block[i][j] &&
+                		x - ch + i >= 0 &&
+                		ct.t[x - ch + i][y + j] && drawcur)
                     end = true;
-                if (x + i + 1 == h ||
-                (cur.block[i][j] && ct.t[x + i + 1][y + j]))
+                if (x - ch + i + 1 == h ||
+                		(cur.block[i][j] && 
+                        		x - ch + i >= 0 &&
+                				ct.t[x - ch + i + 1][y + j]))
                     return false;
             }
         return true;
@@ -70,12 +76,15 @@ public class Tetris {
             continuemv = false;
             if(drawcur) {
                 ptc.figureStopped();
-                for(int i = 0; i < cur.h; i++)
-                    for(int j = 0; j < cur.w; j++)
-                        if (cur.block[i][j]) {
-                            ct.t[x + i][y + j] = true;
-                            ct.code[x + i][y + j] = 1;
-                            ct.c[x + i][y + j] = cur.color;
+                int ch = cur.h,
+                	cw = cur.w;
+                for(int i = 0; i < ch; i++)
+                    for(int j = 0; j < cw; j++)
+                        if (x - ch + i >= 0 &&
+                        		cur.block[i][j]) {
+                            ct.t[x - ch + i][y + j] = true;
+                            ct.code[x - ch + i][y + j] = 1;
+                            ct.c[x - ch + i][y + j] = cur.color;
                         }
             }
             if(!checkLine())
@@ -106,12 +115,16 @@ public class Tetris {
                 pt.code[i][j] = ct.code[i][j];
             }
         if(!end && cur != null && drawcur) {
-            for(int i = 0; i < cur.h; i++)
-                for(int j = 0; j < cur.w; j++)
+	        int ch = cur.h,
+	            cw = cur.w;
+            for(int i = 0; i < ch; i++)
+                for(int j = 0; j < cw; j++)
                     if(cur.block[i][j]) {
-                        pt.t[x + i][y + j] = true;
-                        pt.code[x + i][y + j] = 1;
-                        pt.c[x + i][y + j] = cur.color;
+                    	if (x - ch + i >= 0) {
+	                        pt.t[x  - ch + i][y + j] = true;
+	                        pt.code[x  - ch + i][y + j] = 1;
+	                        pt.c[x  - ch + i][y + j] = cur.color;
+                    	}
                         
                         if(ghx - x >= cur.h) {
                             pt.code[ghx + i][ghy + j] = 2;
@@ -130,11 +143,15 @@ public class Tetris {
     }
 
     private boolean canGen() {
-        int nx = 0;
-        int ny = w / 2 - next.w / 2;
-        for(int i = 0; i < next.h; i++)
-            for(int j = 0; j < next.w; j++) {
-                if(next.block[i][j] && ct.t[nx + i][ny + j]) {
+        int nx = 0,
+        	ny = w / 2 - next.w / 2,
+        	nh = next.h,
+        	nw = next.w;
+        for(int i = 0; i < nh; i++)
+            for(int j = 0; j < nw; j++) {
+                if(next.block[i][j] &&
+                		nx - nh + i >= 0 &&
+                		ct.t[nx - nh + i][ny + j]) {
                     end = true;
                     return false;
                 }
@@ -145,10 +162,14 @@ public class Tetris {
     void moveLeft() {
         if(end)
             return;
-        for(int i = 0; i < cur.h; i++)
-            for(int j = 0; j < cur.w; j++) {
+        int ch = cur.h,
+        	cw = cur.w;
+        for(int i = 0; i < ch; i++)
+            for(int j = 0; j < cw; j++) {
                 if (y + j - 1 < 0 ||
-                (cur.block[i][j] && ct.t[x + i][y + j - 1]))
+                		(cur.block[i][j] && 
+                				x - ch + i >= 0 &&
+                				ct.t[x - ch + i][y + j - 1]))
                     return;
             }
         y--;
@@ -158,10 +179,14 @@ public class Tetris {
     void moveRight() {
         if(end)
             return;
-        for(int i = 0; i < cur.h; i++)
-            for(int j = 0; j < cur.w; j++) {
+        int ch = cur.h,
+            cw = cur.w;
+        for(int i = 0; i < ch; i++)
+            for(int j = 0; j < cw; j++) {
                 if (y + j + 1 == w ||
-                (cur.block[i][j] && ct.t[x + i][y + j + 1]))
+                		(cur.block[i][j] && 
+                				x - ch + i >= 0 &&
+                				ct.t[x - ch + i][y + j + 1]))
                     return;
             }
         y++;
@@ -177,9 +202,13 @@ public class Tetris {
             ny--;
         if(rot.h + x > h)
             return;
-        for(int i = 0; i < rot.h; i++)
-            for(int j = 0; j < rot.w; j++) {
-                if (rot.block[i][j] && ct.t[x + i][ny + j])
+        int rh = rot.h,
+        	rw = rot.w;
+        for(int i = 0; i < rh; i++)
+            for(int j = 0; j < rw; j++) {
+                if (rot.block[i][j] &&
+                		x - rh + i >= 0 &&
+                		ct.t[x - rh + i][ny + j])
                     return;
             }
         y = ny;
