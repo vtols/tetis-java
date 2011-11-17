@@ -1,4 +1,4 @@
-package tetisconsole;
+package tetis;
 
 public class StandardCounter extends Counter {
     

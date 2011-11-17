@@ -1,4 +1,4 @@
-package tetisconsole;
+package tetis;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;

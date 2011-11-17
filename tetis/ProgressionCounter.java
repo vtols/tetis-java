@@ -1,4 +1,4 @@
-package tetisconsole;
+package tetis;
 
 public class ProgressionCounter extends Counter {
     

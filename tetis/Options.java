@@ -1,4 +1,4 @@
-package tetisconsole;
+package tetis;
 
 import java.io.File;
 

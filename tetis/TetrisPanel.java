@@ -1,4 +1,4 @@
-package tetisconsole;
+package tetis;
 
 import java.awt.Color;
 import java.awt.Dimension;
