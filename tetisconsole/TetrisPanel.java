@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tetisconsole;
 
 import java.awt.Color;
@@ -16,10 +11,6 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-/**
- *
- * @author ИгВа
- */
 public class TetrisPanel extends JPanel{
 
     DrawingInterface current = null;

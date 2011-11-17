@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tetisconsole;
 
 import java.awt.Color;
@@ -15,10 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
-/**
- *
- * @author ИгВа
- */
 public class DrawingMenu implements DrawingInterface {
 
     TetrisPanel owner;

@@ -1,16 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tetisconsole;
 
 import java.awt.Color;
 
-/**
- *
- * @author ИгВа
- */
 public class ColoredTable {
     boolean[][] t;
     int[][] code;

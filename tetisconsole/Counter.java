@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tetisconsole;
 
-/**
- *
- * @author mtcomscxstart
- */
 public abstract class Counter {
     
     int scale, pts = 0, lines = 0;

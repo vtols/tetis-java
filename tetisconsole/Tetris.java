@@ -1,17 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tetisconsole;
 
 import java.awt.Color;
 import java.util.Random;
 
-/**
- *
- * @author ИгВа
- */
 public class Tetris {
     ColoredTable ct;     //TODO
     boolean end = false;
