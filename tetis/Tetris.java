@@ -200,15 +200,19 @@ public class Tetris {
         int ny = y;
         while(rot.w + ny > w)
             ny--;
-        if(rot.h + x > h)
-            return;
         int rh = rot.h,
         	rw = rot.w;
         for(int i = 0; i < rh; i++)
             for(int j = 0; j < rw; j++) {
+                if(!rot.block[i][j])
+                    continue;
+                int row = x - rh + i;
+                int col = ny + j;
+                if(row >= h || col < 0 || col >= w)
+                    return;
                 if (rot.block[i][j] &&
-                		x - rh + i >= 0 &&
-                		ct.t[x - rh + i][ny + j])
+                		row >= 0 &&
+                		ct.t[row][col])
                     return;
             }
         y = ny;

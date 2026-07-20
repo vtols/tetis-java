@@ -97,14 +97,16 @@ public class Bug1 {
             int ny = t.y;
             while(rot.w + ny > t.w)
                 ny--;
-            if(rot.h + t.x > t.h)
-                return;
 
             for(int i = 0; i < rot.h; i++)
                 for(int j = 0; j < rot.w; j++) {
                     int row = t.x - rot.h + i;
                     int col = ny + j;
-                    if(!rot.block[i][j] || row < 0)
+                    if(!rot.block[i][j])
+                        continue;
+                    if(row >= t.h || col < 0 || col >= t.w)
+                        return;
+                    if(row < 0)
                         continue;
                     if(t.ct.t[row][col])
                         return;
